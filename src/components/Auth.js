@@ -1,19 +1,32 @@
-import React, { Fragment } from 'react'
-import { Button, Space, Form, Input } from 'antd';
+import React, { Fragment } from "react";
+import { Button, Space, Form, Input } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { loginData, registerData } from "../store/auth-slice";
 
-const Auth = ({type}) => {
+const Auth = ({ type }) => {
+  const dispatch = useDispatch();
+  const login = useSelector((state) => state.auth.token);
+
   const onFinish = (values) => {
-    console.log('Success:', values);
+    if (type == "login") {
+      dispatch(loginData(values));
+    } else {
+      dispatch(registerData(values));
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
+    console.log("Failed:", errorInfo);
   };
 
   return (
     <Fragment>
-      <Space direction="horizontal" style={{width: '100%', justifyContent: 'center'}}>
-        <h2>{type=="login" ? "Login" : "Register"}</h2>
+      {login ? <p>login</p> : <p>belum login</p>}
+      <Space
+        direction="horizontal"
+        style={{ width: "100%", justifyContent: "center" }}
+      >
+        <h2>{type == "login" ? "Login" : "Register"}</h2>
       </Space>
       <Form
         name="basic"
@@ -28,12 +41,12 @@ const Auth = ({type}) => {
         autoComplete="off"
       >
         <Form.Item
-          label="Username"
-          name="username"
+          label="Email"
+          name="email"
           rules={[
             {
               required: true,
-              message: 'Please input your username!',
+              message: "Please input your Email!",
             },
           ]}
         >
@@ -46,7 +59,7 @@ const Auth = ({type}) => {
           rules={[
             {
               required: true,
-              message: 'Please input your password!',
+              message: "Please input your password!",
             },
           ]}
         >
@@ -66,6 +79,6 @@ const Auth = ({type}) => {
       </Form>
     </Fragment>
   );
-}
+};
 
 export default Auth;

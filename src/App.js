@@ -1,27 +1,49 @@
 import "./App.css";
 import Auth from "./components/Auth";
 import "antd/dist/antd.css";
-import { Button, Descriptions, PageHeader } from "antd";
-import { Route, Link } from "react-router-dom";
+import { PageHeader } from "antd";
+import { Route, Link, Redirect } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { authActions } from "./store/auth-slice";
 
 function App() {
+  const dispatch = useDispatch();
+  const isLogin = useSelector((state) => state.auth.isLogin);
+
+  const logoutHandler = () => {
+    dispatch(authActions.logout());
+  };
+
   return (
     <div className="site-page-header-ghost-wrapper">
       <PageHeader
         ghost={false}
-        // onBack={() => window.history.back()}
         title="Movie Mania"
-        extra={[
-          <Link to="/login">Login</Link>,
-          <Link to="/register">Register</Link>,
-          <Link >Logout</Link>,
-        ]}
+        extra={
+          isLogin
+            ? [
+                <Link key="3" to="/logout" onClick={logoutHandler}>
+                  Logout
+                </Link>,
+              ]
+            : [
+                <Link key="1" to="/login">
+                  Login
+                </Link>,
+                <Link key="2" to="/register">
+                  Register
+                </Link>,
+              ]
+        }
       ></PageHeader>
       <Route path="/login">
         <Auth type="login" />
       </Route>
       <Route path="/register">
         <Auth type="register" />
+      </Route>
+      <Route path="/logout" exact>
+        <Redirect to="/login" />
       </Route>
     </div>
   );

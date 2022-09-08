@@ -1,14 +1,15 @@
-import React from "react";
 import "antd/dist/antd.css";
-import Auth from "./components/Auth";
-import Home from "./components/Home";
-import DetailMovie from "./components/DetailMovie";
-import { Route, Redirect } from "react-router-dom";
+import React from "react";
 import { useSelector } from "react-redux";
+import { Redirect, Route, Switch } from "react-router-dom";
+import Auth from "./components/Auth";
+import DetailMovie from "./components/DetailMovie";
+import FavoriteMovies from "./components/FavoriteMovies";
 import Header from "./components/Header";
+import Home from "./components/Home";
 
 function App() {
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const isLogin = useSelector((state) => state.auth.token);
 
   return (
     <>
@@ -25,7 +26,7 @@ function App() {
       <Route path="/" exact>
         <Redirect to="/login" />
       </Route>
-      {isLogin &&  (
+      {isLogin && (
         <>
           <Route path="/login">
             <Redirect to="/movies" />
@@ -41,6 +42,9 @@ function App() {
           </Route>
           <Route path="/top-rated">
             <Home type="top-rated" />
+          </Route>
+          <Route path="/favorites">
+            <FavoriteMovies />
           </Route>
           <Route path="/movies/:movieId">
             <DetailMovie />

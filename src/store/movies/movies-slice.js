@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   movies: [],
   movie: [],
+  favoriteMovies: [],
 };
 
 export const moviesSlice = createSlice({
@@ -23,6 +24,20 @@ export const moviesSlice = createSlice({
     },
     getDetailMovie(state, action) {
       state.movie = action.payload;
+    },
+    setFavoriteMovie(state, action) {
+      if (
+        state.favoriteMovies.some((movie) => movie.id === action.payload.id)
+      ) {
+        console.log("sudah ada");
+      } else {
+        state.favoriteMovies.push(action.payload);
+      }
+    },
+    removeFavoriteMovie(state, action) {
+      state.favoriteMovies = state.favoriteMovies.filter(
+        (movie) => movie.id !== action.payload
+      );
     },
   },
 });

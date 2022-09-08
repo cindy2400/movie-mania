@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Space, Badge, Input, Select, Col, Row } from "antd";
+import { Card, Space, Badge, Input, Select, Col, Row, Empty } from "antd";
 import {
   fetchNowPlayingMovies,
   fetchUpcomingMovies,
@@ -88,6 +88,8 @@ const Home = ({ type }) => {
           </Select>
         </Col>
       </Row>
+      
+      {(searchMovies.length == 0) && <Empty />}
 
       <Space size={[40, 40]} wrap>
         {searchMovies.map((movie) => (

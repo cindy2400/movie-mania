@@ -7,11 +7,11 @@ import { authActions } from "../store/auth/auth-slice";
 
 const Header = () => {
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.auth.isLogin);
+  const isLogin = useSelector((state) => state.auth.token);
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
-    // localStorage.removeItem('loginToken');
+    localStorage.removeItem('loginToken');
   };
 
   return (
@@ -33,6 +33,9 @@ const Header = () => {
                 </Link>,
                 <Link key="7" to="/top-rated">
                   Top Rated
+                </Link>,
+                <Link key="8" to="/favorites">
+                  Favorites
                 </Link>,
                 <Link key="3" to="/logout" onClick={logoutHandler}>
                   Logout

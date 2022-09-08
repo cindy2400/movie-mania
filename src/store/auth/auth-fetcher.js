@@ -33,7 +33,8 @@ export const loginData = (loginData) => {
 
     try {
       const dataLogin = await fetchData();
-      dispatch(authActions.login(dataLogin.token));
+      localStorage.setItem('loginToken', dataLogin.token)
+      dispatch(authActions.login(localStorage.getItem('loginToken')));
     } catch (error) {
       console.log(error);
     }

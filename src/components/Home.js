@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, Space, Image, Badge, Input } from "antd";
 import {
   fetchNowPlayingMovies,
@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 const Home = ({ type }) => {
   const dispatch = useDispatch();
   const movies = useSelector((state) => state.movies.movies);
+  const [search, setSearch] = useState("");
+  const [searchMovies, setSearchMovies] = useState([]);
 
   useEffect(() => {
     if (type === "upcoming") {
@@ -26,12 +28,28 @@ const Home = ({ type }) => {
     }
   }, [dispatch, type]);
 
+  useEffect(() => {
+    const tempSearch = setTimeout(() => {
+      const filteredMovies = movies.filter((movie) =>
+        movie.title.toLowerCase().includes(search)
+      );
+      setSearchMovies(filteredMovies);
+    }, 500);
+    return () => {
+      clearTimeout(tempSearch);
+    };
+  }, [movies, search]);
+
+  const searchHandler = (e) => {
+    setSearch(e.target.value);
+  };
+
   return (
     <>
-    <br></br>
-      <Input placeholder="Search" />
+      <br></br>
+      <Input placeholder="Search" onChange={searchHandler} />
       <Space size={[40, 40]} wrap>
-        {movies.map((movie) => (
+        {searchMovies.map((movie) => (
           <Badge.Ribbon
             key={movie.id}
             text={movie.vote_average}

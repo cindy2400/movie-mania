@@ -34,7 +34,7 @@ const DetailMovie = () => {
           >
             {movieDetail.genres &&
               movieDetail.genres.map((genre) => {
-                return <p>{genre.name}</p>;
+                return <p key={genre.id}>{genre.name}</p>;
               })}
             <Meta
               title={movieDetail.title}

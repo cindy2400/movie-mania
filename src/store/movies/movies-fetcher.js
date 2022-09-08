@@ -78,7 +78,6 @@ export const fetchTopRatedMovies = () => {
 export const fetchDetailMovie = (id) => {
   return async (dispatch) => {
     const fetchData = async () => {
-      console.log(id)
       const response = await axios.get(
         `https://api.themoviedb.org/3/movie/${id}?api_key=27280631869f4ae80976e4df31f9823a&language=en-US`
       );

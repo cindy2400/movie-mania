@@ -1,25 +1,5 @@
-import { createSlice, configureStore } from "@reduxjs/toolkit";
 import axios from "axios";
-
-const initialState = {
-  isLogin: false,
-  token: "",
-};
-
-const authSlice = createSlice({
-  name: "authentication",
-  initialState: initialState,
-  reducers: {
-    login(state, action) {
-      state.isLogin = true;
-      state.token = action.payload;
-    },
-    logout(state) {
-      state.isLogin = false;
-      state.token = "";
-    },
-  },
-});
+import { authActions } from "./auth-slice";
 
 export const registerData = (registerData) => {
   return async () => {
@@ -59,12 +39,3 @@ export const loginData = (loginData) => {
     }
   };
 };
-
-const store = configureStore({
-  reducer: {
-    auth: authSlice.reducer,
-  },
-});
-
-export const authActions = authSlice.actions;
-export default store;

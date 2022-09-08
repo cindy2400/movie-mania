@@ -1,18 +1,15 @@
 import React, { Fragment } from "react";
 import { Button, Space, Form, Input } from "antd";
-import { useDispatch, useSelector } from "react-redux";
-import { loginData, registerData } from "../store/auth-slice";
+import { useDispatch} from "react-redux";
+import { loginData, registerData } from "../store/auth/auth-fetcher";
 
 const Auth = ({ type }) => {
   const dispatch = useDispatch();
-  const login = useSelector((state) => state.auth.token);
 
   const onFinish = (values) => {
-    if (type == "login") {
-      dispatch(loginData(values));
-    } else {
-      dispatch(registerData(values));
-    }
+    type == "login"
+      ? dispatch(loginData(values))
+      : dispatch(registerData(values));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -21,7 +18,6 @@ const Auth = ({ type }) => {
 
   return (
     <Fragment>
-      {login ? <p>login</p> : <p>belum login</p>}
       <Space
         direction="horizontal"
         style={{ width: "100%", justifyContent: "center" }}

@@ -1,41 +1,18 @@
-import "./App.css";
-import Auth from "./components/Auth";
+import React from "react";
 import "antd/dist/antd.css";
-import { PageHeader } from "antd";
-import { Route, Link, Redirect } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { authActions } from "./store/auth-slice";
+import Auth from "./components/Auth";
+import Home from "./components/Home";
+import DetailMovie from "./components/DetailMovie";
+import { Route, Redirect } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Header from "./components/Header";
 
 function App() {
-  const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.auth.isLogin);
 
-  const logoutHandler = () => {
-    dispatch(authActions.logout());
-  };
-
   return (
-    <div className="site-page-header-ghost-wrapper">
-      <PageHeader
-        ghost={false}
-        title="Movie Mania"
-        extra={
-          isLogin
-            ? [
-                <Link key="3" to="/logout" onClick={logoutHandler}>
-                  Logout
-                </Link>,
-              ]
-            : [
-                <Link key="1" to="/login">
-                  Login
-                </Link>,
-                <Link key="2" to="/register">
-                  Register
-                </Link>,
-              ]
-        }
-      ></PageHeader>
+    <>
+      <Header />
       <Route path="/login">
         <Auth type="login" />
       </Route>
@@ -45,7 +22,42 @@ function App() {
       <Route path="/logout" exact>
         <Redirect to="/login" />
       </Route>
-    </div>
+      <Route path="/" exact>
+        <Redirect to="/login" />
+      </Route>
+      {isLogin && (
+        <>
+          <Route path="/login">
+            <Redirect to="/movies" />
+          </Route>
+          <Route path="/movies" exact>
+            <Home />
+          </Route>
+          <Route path="/upcoming">
+            <Home type="upcoming" />
+          </Route>
+          <Route path="/popular">
+            <Home type="popular" />
+          </Route>
+          <Route path="/top-rated">
+            <Home type="top-rated" />
+          </Route>
+          <Route path="/movies/:movieId">
+            <DetailMovie />
+          </Route>
+        </>
+      )}
+      {!isLogin && (
+        <>
+          <Route path="/movies">
+            <Redirect to="/login" />
+          </Route>
+          <Route path="*">
+            <Redirect to="/login" />
+          </Route>
+        </>
+      )}
+    </>
   );
 }
 

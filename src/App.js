@@ -25,7 +25,7 @@ function App() {
       <Route path="/" exact>
         <Redirect to="/login" />
       </Route>
-      {isLogin && (
+      {isLogin &&  (
         <>
           <Route path="/login">
             <Redirect to="/movies" />

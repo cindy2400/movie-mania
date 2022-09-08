@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import { Button, Space, Form, Input } from "antd";
-import { useDispatch} from "react-redux";
+import { Button, Space, Form, Input, message } from "antd";
+import { useDispatch, useSelector } from "react-redux";
 import { loginData, registerData } from "../store/auth/auth-fetcher";
 
 const Auth = ({ type }) => {

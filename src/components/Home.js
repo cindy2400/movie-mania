@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Space, Image, Badge, Input } from "antd";
+import { Card, Space, Badge, Input, Select, Col, Row } from "antd";
 import {
   fetchNowPlayingMovies,
   fetchUpcomingMovies,
@@ -9,11 +9,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import { Link } from "react-router-dom";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
+
+const { Option } = Select;
 
 const Home = ({ type }) => {
   const dispatch = useDispatch();
   const movies = useSelector((state) => state.movies.movies);
   const [search, setSearch] = useState("");
+  const [filtered, setFiltered] = useState("all");
   const [searchMovies, setSearchMovies] = useState([]);
 
   useEffect(() => {
@@ -30,24 +35,60 @@ const Home = ({ type }) => {
 
   useEffect(() => {
     const tempSearch = setTimeout(() => {
-      const filteredMovies = movies.filter((movie) =>
-        movie.title.toLowerCase().includes(search)
-      );
+      let filteredMovies = null;
+      if (filtered === "all") {
+        filteredMovies = movies.filter((movie) =>
+          movie.title.toLowerCase().includes(search)
+        );
+      } else if (filtered !== "all" && search == "") {
+        filteredMovies = movies.filter(
+          (movie) => movie.original_language == filtered
+        );
+      } else {
+        filteredMovies = movies.filter(
+          (movie) =>
+            movie.title.toLowerCase().includes(search) &&
+            movie.original_language == filtered
+        );
+      }
       setSearchMovies(filteredMovies);
     }, 500);
     return () => {
       clearTimeout(tempSearch);
     };
-  }, [movies, search]);
+  }, [movies, search, filtered]);
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
   };
 
+  const handleChange = (value) => {
+    setFiltered(value);
+  };
+
   return (
     <>
-      <br></br>
-      <Input placeholder="Search" onChange={searchHandler} />
+      <Row style={{ margin: 20 }}>
+        <Col span={18} push={6}>
+          <Input placeholder="Search" onChange={searchHandler} />
+        </Col>
+        <Col span={6} pull={18}>
+          <Select
+            defaultValue="all"
+            style={{
+              width: 120,
+            }}
+            onChange={handleChange}
+          >
+            <Option value="all">All</Option>
+            <Option value="en">English</Option>
+            <Option value="es">Spain</Option>
+            <Option value="hi">Indian</Option>
+            <Option value="ja">Japan</Option>
+          </Select>
+        </Col>
+      </Row>
+
       <Space size={[40, 40]} wrap>
         {searchMovies.map((movie) => (
           <Badge.Ribbon
@@ -62,7 +103,12 @@ const Home = ({ type }) => {
                   width: 300,
                 }}
               >
-                <Image src={`${IMAGE_BASEURL}${movie.poster_path}`} />
+                <LazyLoadImage
+                  width={250}
+                  height="auto"
+                  src={`${IMAGE_BASEURL}${movie.poster_path}`}
+                  effect="blur"
+                />
               </Card>
             </Link>
           </Badge.Ribbon>

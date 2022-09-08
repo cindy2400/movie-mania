@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, Card, Row, Space, Image } from "antd";
 import { IMAGE_BASEURL } from "../apiRoutes";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+
 const { Meta } = Card;
 
 const DetailMovie = () => {
@@ -30,7 +32,11 @@ const DetailMovie = () => {
             style={{
               width: 800,
             }}
-            cover={<img src={`${IMAGE_BASEURL}${movieDetail.backdrop_path}`} />}
+            cover={
+              <LazyLoadImage
+                src={`${IMAGE_BASEURL}${movieDetail.backdrop_path}`}
+              />
+            }
           >
             {movieDetail.genres &&
               movieDetail.genres.map((genre) => {

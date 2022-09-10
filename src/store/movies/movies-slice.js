@@ -26,13 +26,7 @@ export const moviesSlice = createSlice({
       state.movie = action.payload;
     },
     setFavoriteMovie(state, action) {
-      if (
-        state.favoriteMovies.some((movie) => movie.id === action.payload.id)
-      ) {
-        console.log("sudah ada");
-      } else {
-        state.favoriteMovies.push(action.payload);
-      }
+      state.favoriteMovies.push(action.payload);
     },
     removeFavoriteMovie(state, action) {
       state.favoriteMovies = state.favoriteMovies.filter(

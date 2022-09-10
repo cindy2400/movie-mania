@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Space, Badge, Input, Select, Col, Row, Empty } from "antd";
+import { Card, Space, Badge, Input, Select, Col, Row } from "antd";
 import {
   fetchNowPlayingMovies,
   fetchUpcomingMovies,
@@ -20,6 +20,7 @@ const Home = ({ type }) => {
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState("all");
   const [searchMovies, setSearchMovies] = useState([]);
+  const [languageOption, setLanguageOption] = useState([]);
 
   useEffect(() => {
     if (type === "upcoming") {
@@ -31,6 +32,14 @@ const Home = ({ type }) => {
     } else {
       dispatch(fetchNowPlayingMovies());
     }
+
+    let languages = [];
+    movies.map((movie) => {
+      if (!languages.includes(movie.original_language)) {
+        languages.push(movie.original_language);
+      }
+    });
+    setLanguageOption(languages);
   }, [dispatch, type]);
 
   useEffect(() => {
@@ -81,15 +90,12 @@ const Home = ({ type }) => {
             onChange={handleChange}
           >
             <Option value="all">All</Option>
-            <Option value="en">English</Option>
-            <Option value="es">Spain</Option>
-            <Option value="hi">Indian</Option>
-            <Option value="ja">Japan</Option>
+            {languageOption.map((lang) => {
+              return <Option value={lang}>{lang}</Option>;
+            })}
           </Select>
         </Col>
       </Row>
-      
-      {(searchMovies.length == 0) && <Empty />}
 
       <Space size={[40, 40]} wrap>
         {searchMovies.map((movie) => (

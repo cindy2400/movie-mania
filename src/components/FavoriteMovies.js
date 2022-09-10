@@ -19,7 +19,7 @@ const FavoriteMovies = () => {
             text={movie.vote_average}
             color="volcano"
           >
-            <Link to={{ pathname: `/movies/${movie.id}`, state: "favorite" }}>
+            <Link to={`/movies/${movie.id}`}>
               <Card
                 title={movie.title}
                 style={{

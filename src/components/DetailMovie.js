@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { fetchDetailMovie } from "../store/movies/movies-fetcher";
-import { useParams, useLocation, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Badge, Card, Row, Button, message } from "antd";
 import { IMAGE_BASEURL } from "../apiRoutes";
@@ -11,9 +11,8 @@ const { Meta } = Card;
 
 const DetailMovie = () => {
   const dispatch = useDispatch();
-  const data = useLocation();
-  const history = useHistory();
   const movieDetail = useSelector((state) => state.movies.movie);
+  const favMovie = useSelector((state) => state.movies.favoriteMovies);
   const param = useParams();
   const { movieId } = param;
 
@@ -29,11 +28,16 @@ const DetailMovie = () => {
   const removeMovieHandler = (movieId) => {
     dispatch(moviesActions.removeFavoriteMovie(movieId));
     message.info("Movie removed from favorite");
-    history.push("/favorites");
+    // history.push("/favorites");
   };
 
   const favRemoveButton = () => {
-    if (data.state != null) {
+    let favMov = false;
+    if (favMovie.length !== 0) {
+      favMov = favMovie.some((movie) => movieDetail.id === movie.id);
+    }
+
+    if (favMov) {
       return (
         <Button
           type="dashed"

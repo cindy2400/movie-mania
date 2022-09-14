@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
-import { fetchDetailMovie } from "../store/movies/movies-fetcher";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { Badge, Card, Row, Button, message } from "antd";
-import { IMAGE_BASEURL } from "../apiRoutes";
+import { Badge, Button, Card, message, Row } from "antd";
+import React, { useEffect, useMemo } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { IMAGE_BASEURL } from "../apiRoutes";
+import { fetchDetailMovie } from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
 
 const { Meta } = Card;
@@ -15,6 +15,10 @@ const DetailMovie = () => {
   const favMovie = useSelector((state) => state.movies.favoriteMovies);
   const param = useParams();
   const { movieId } = param;
+  const isFavoriteMovie = useMemo(
+    () => favMovie.some((movie) => movieId == movie.id),
+    [favMovie, movieId]
+  );
 
   useEffect(() => {
     dispatch(fetchDetailMovie(movieId));
@@ -28,16 +32,10 @@ const DetailMovie = () => {
   const removeMovieHandler = (movieId) => {
     dispatch(moviesActions.removeFavoriteMovie(movieId));
     message.info("Movie removed from favorite");
-    // history.push("/favorites");
   };
 
-  const favRemoveButton = () => {
-    let favMov = false;
-    if (favMovie.length !== 0) {
-      favMov = favMovie.some((movie) => movieDetail.id === movie.id);
-    }
-
-    if (favMov) {
+  const favRemoveButton = (isFavoriteMovie) => {
+    if (isFavoriteMovie) {
       return (
         <Button
           type="dashed"
@@ -82,7 +80,7 @@ const DetailMovie = () => {
               />
             }
           >
-            {favRemoveButton()}
+            {favRemoveButton(isFavoriteMovie)}
 
             {movieDetail.genres &&
               movieDetail.genres.map((genre) => {

@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { Card, Space, Badge, Input, Select, Col, Row } from "antd";
-import {
-  fetchNowPlayingMovies,
-  fetchUpcomingMovies,
-  fetchPopularMovies,
-  fetchTopRatedMovies,
-} from "../store/movies/movies-fetcher";
-import { useDispatch, useSelector } from "react-redux";
-import { IMAGE_BASEURL } from "../apiRoutes";
-import { Link } from "react-router-dom";
+import { Badge, Card, Col, Input, Row, Select, Space } from "antd";
+import React, { useEffect, useMemo, useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { IMAGE_BASEURL } from "../apiRoutes";
+import {
+  fetchNowPlayingMovies,
+  fetchPopularMovies,
+  fetchTopRatedMovies,
+  fetchUpcomingMovies,
+} from "../store/movies/movies-fetcher";
+import Pagination from "./Pagination";
 
 const { Option } = Select;
 
@@ -20,7 +21,28 @@ const Home = ({ type }) => {
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState("all");
   const [searchMovies, setSearchMovies] = useState([]);
-  const [languageOption, setLanguageOption] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const moviesPerPage = 8;
+  const indexOfLastMovie = useMemo(
+    () => currentPage * moviesPerPage,
+    [currentPage]
+  );
+  const indexOfFirstMovie = useMemo(
+    () => indexOfLastMovie - moviesPerPage,
+    [indexOfLastMovie]
+  );
+  const currentMovies = useMemo(
+    () => movies.slice(indexOfFirstMovie, indexOfLastMovie),
+    [indexOfFirstMovie, indexOfLastMovie, movies]
+  );
+  const languages = useMemo(
+    () => [...new Set(movies.map((movie) => movie.original_language))],
+    [movies]
+  );
+
+  const paginateHandler = (pageNumbers) => {
+    setCurrentPage(pageNumbers);
+  };
 
   useEffect(() => {
     if (type === "upcoming") {
@@ -32,32 +54,24 @@ const Home = ({ type }) => {
     } else {
       dispatch(fetchNowPlayingMovies());
     }
-
-    let languages = [];
-    movies.map((movie) => {
-      if (!languages.includes(movie.original_language)) {
-        languages.push(movie.original_language);
-      }
-    });
-    setLanguageOption(languages);
   }, [dispatch, type]);
 
   useEffect(() => {
     const tempSearch = setTimeout(() => {
       let filteredMovies = null;
       if (filtered === "all") {
-        filteredMovies = movies.filter((movie) =>
+        filteredMovies = currentMovies.filter((movie) =>
           movie.title.toLowerCase().includes(search)
         );
-      } else if (filtered !== "all" && search == "") {
-        filteredMovies = movies.filter(
-          (movie) => movie.original_language == filtered
+      } else if (filtered !== "all" && search === "") {
+        filteredMovies = currentMovies.filter(
+          (movie) => movie.original_language === filtered
         );
       } else {
-        filteredMovies = movies.filter(
+        filteredMovies = currentMovies.filter(
           (movie) =>
             movie.title.toLowerCase().includes(search) &&
-            movie.original_language == filtered
+            movie.original_language === filtered
         );
       }
       setSearchMovies(filteredMovies);
@@ -65,7 +79,7 @@ const Home = ({ type }) => {
     return () => {
       clearTimeout(tempSearch);
     };
-  }, [movies, search, filtered]);
+  }, [currentMovies, search, filtered]);
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
@@ -90,8 +104,12 @@ const Home = ({ type }) => {
             onChange={handleChange}
           >
             <Option value="all">All</Option>
-            {languageOption.map((lang) => {
-              return <Option value={lang}>{lang}</Option>;
+            {languages.map((lang) => {
+              return (
+                <Option key={lang} value={lang}>
+                  {lang}
+                </Option>
+              );
             })}
           </Select>
         </Col>
@@ -122,6 +140,18 @@ const Home = ({ type }) => {
           </Badge.Ribbon>
         ))}
       </Space>
+      <Row
+        type="flex"
+        justify="center"
+        align="middle"
+        style={{ minHeight: "15vh" }}
+      >
+        <Pagination
+          moviesPerPage={moviesPerPage}
+          totalMovies={movies.length}
+          paginateHandler={paginateHandler}
+        />
+      </Row>
     </>
   );
 };

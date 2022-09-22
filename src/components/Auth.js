@@ -1,13 +1,13 @@
+import { Button, Form, Input, Space } from "antd";
 import React, { Fragment } from "react";
-import { Button, Space, Form, Input, message } from "antd";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loginData, registerData } from "../store/auth/auth-fetcher";
 
 const Auth = ({ type }) => {
   const dispatch = useDispatch();
 
   const onFinish = (values) => {
-    type == "login"
+    type === "login"
       ? dispatch(loginData(values))
       : dispatch(registerData(values));
   };
@@ -22,7 +22,7 @@ const Auth = ({ type }) => {
         direction="horizontal"
         style={{ width: "100%", justifyContent: "center" }}
       >
-        <h2>{type == "login" ? "Login" : "Register"}</h2>
+        <h2>{type === "login" ? "Login" : "Register"}</h2>
       </Space>
       <Form
         name="basic"

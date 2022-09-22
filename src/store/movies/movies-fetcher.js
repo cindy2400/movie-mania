@@ -1,74 +1,50 @@
 import axios from "axios";
-import { moviesActions } from "./movies-slice";
 import {
   GET_NOW_PLAYING,
-  GET_UPCOMING,
   GET_POPULAR,
   GET_TOP_RATED,
+  GET_UPCOMING,
 } from "../../apiRoutes";
+import { moviesActions } from "./movies-slice";
 
-export const fetchNowPlayingMovies = () => {
+export const fetchNowPlayingMovies = (page) => {
   return async (dispatch) => {
-    const fetchData = async () => {
-      const response = await axios.get(GET_NOW_PLAYING);
-      const data = await response.data;
-      return data;
-    };
-
     try {
-      const movies = await fetchData();
-      dispatch(moviesActions.getNowPlayingMovies(movies.results));
+      const response = await axios.get(`${GET_NOW_PLAYING}&page=${page}`);
+      dispatch(moviesActions.getNowPlayingMovies(response.data));
     } catch (error) {
       console.log(error);
     }
   };
 };
 
-export const fetchUpcomingMovies = () => {
+export const fetchUpcomingMovies = (page) => {
   return async (dispatch) => {
-    const fetchData = async () => {
-      const response = await axios.get(GET_UPCOMING);
-      const data = await response.data;
-      return data;
-    };
-
     try {
-      const movies = await fetchData();
-      dispatch(moviesActions.getUpcomingMovie(movies.results));
+      const response = await axios.get(`${GET_UPCOMING}&page=${page}`);
+      dispatch(moviesActions.getUpcomingMovie(response.data));
     } catch (error) {
       console.log(error);
     }
   };
 };
 
-export const fetchPopularMovies = () => {
+export const fetchPopularMovies = (page) => {
   return async (dispatch) => {
-    const fetchData = async () => {
-      const response = await axios.get(GET_POPULAR);
-      const data = await response.data;
-      return data;
-    };
-
     try {
-      const movies = await fetchData();
-      dispatch(moviesActions.getPopularMovies(movies.results));
+      const response = await axios.get(`${GET_POPULAR}&page=${page}`);
+      dispatch(moviesActions.getPopularMovies(response.data));
     } catch (error) {
       console.log(error);
     }
   };
 };
 
-export const fetchTopRatedMovies = () => {
+export const fetchTopRatedMovies = (page) => {
   return async (dispatch) => {
-    const fetchData = async () => {
-      const response = await axios.get(GET_TOP_RATED);
-      const data = await response.data;
-      return data;
-    };
-
     try {
-      const movies = await fetchData();
-      dispatch(moviesActions.getTopRatedMovies(movies.results));
+      const response = await axios.get(`${GET_TOP_RATED}&page=${page}`);
+      dispatch(moviesActions.getTopRatedMovies(response.data));
     } catch (error) {
       console.log(error);
     }

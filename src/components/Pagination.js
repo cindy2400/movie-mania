@@ -1,12 +1,14 @@
 import { Button } from "antd";
 import React from "react";
 
-const Pagination = ({ moviesPerPage, totalMovies, paginateHandler }) => {
+const Pagination = ({ totalPages, paginateHandler }) => {
   const pageNumbers = [];
 
-  for (let i = 1; i <= Math.ceil(totalMovies / moviesPerPage); i++) {
+  for (let i = 1; i <= totalPages; i++) {
     pageNumbers.push(i);
   }
+
+  console.log(pageNumbers);
 
   return (
     <div>

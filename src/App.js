@@ -1,7 +1,7 @@
 import "antd/dist/antd.css";
 import React from "react";
 import { useSelector } from "react-redux";
-import { Redirect, Route, Switch } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
 import Auth from "./components/Auth";
 import DetailMovie from "./components/DetailMovie";
 import FavoriteMovies from "./components/FavoriteMovies";

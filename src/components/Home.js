@@ -1,9 +1,9 @@
-import { Badge, Card, Col, Input, Row, Select, Space } from "antd";
+import { Badge, Card, Col, Input, Pagination, Row, Select, Space } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import {
   fetchNowPlayingMovies,
@@ -11,30 +11,24 @@ import {
   fetchTopRatedMovies,
   fetchUpcomingMovies,
 } from "../store/movies/movies-fetcher";
-import Pagination from "./Pagination";
-
 const { Option } = Select;
 
 const Home = ({ type }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
+  const location = useLocation();
   const movies = useSelector((state) => state.movies.movies);
+  const totalPages = useSelector((state) => state.movies.totalPages);
+  const totalResults = useSelector((state) => state.movies.totalMovies);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState("all");
   const [searchMovies, setSearchMovies] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const moviesPerPage = 8;
-  const indexOfLastMovie = useMemo(
-    () => currentPage * moviesPerPage,
-    [currentPage]
-  );
-  const indexOfFirstMovie = useMemo(
-    () => indexOfLastMovie - moviesPerPage,
-    [indexOfLastMovie]
-  );
-  const currentMovies = useMemo(
-    () => movies.slice(indexOfFirstMovie, indexOfLastMovie),
-    [indexOfFirstMovie, indexOfLastMovie, movies]
-  );
+
+  let pageParams;
+  const queryParams = new URLSearchParams(location.search);
+  pageParams = queryParams.get("page") == null ? 1 : queryParams.get("page");
+  const [currentPage, setCurrentPage] = useState(pageParams);
+
   const languages = useMemo(
     () => [...new Set(movies.map((movie) => movie.original_language))],
     [movies]
@@ -46,29 +40,30 @@ const Home = ({ type }) => {
 
   useEffect(() => {
     if (type === "upcoming") {
-      dispatch(fetchUpcomingMovies());
+      dispatch(fetchUpcomingMovies(pageParams));
     } else if (type === "popular") {
-      dispatch(fetchPopularMovies());
+      dispatch(fetchPopularMovies(pageParams));
     } else if (type === "top-rated") {
-      dispatch(fetchTopRatedMovies());
+      dispatch(fetchTopRatedMovies(pageParams));
     } else {
-      dispatch(fetchNowPlayingMovies());
+      dispatch(fetchNowPlayingMovies(pageParams));
     }
-  }, [dispatch, type]);
+    history.push(`${location.pathname}?page=${currentPage}`);
+  }, [dispatch, type, currentPage, history, location.pathname, pageParams]);
 
   useEffect(() => {
     const tempSearch = setTimeout(() => {
       let filteredMovies = null;
       if (filtered === "all") {
-        filteredMovies = currentMovies.filter((movie) =>
+        filteredMovies = movies.filter((movie) =>
           movie.title.toLowerCase().includes(search)
         );
       } else if (filtered !== "all" && search === "") {
-        filteredMovies = currentMovies.filter(
+        filteredMovies = movies.filter(
           (movie) => movie.original_language === filtered
         );
       } else {
-        filteredMovies = currentMovies.filter(
+        filteredMovies = movies.filter(
           (movie) =>
             movie.title.toLowerCase().includes(search) &&
             movie.original_language === filtered
@@ -79,7 +74,7 @@ const Home = ({ type }) => {
     return () => {
       clearTimeout(tempSearch);
     };
-  }, [currentMovies, search, filtered]);
+  }, [movies, search, filtered]);
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
@@ -147,10 +142,12 @@ const Home = ({ type }) => {
         style={{ minHeight: "15vh" }}
       >
         <Pagination
-          moviesPerPage={moviesPerPage}
-          totalMovies={movies.length}
-          paginateHandler={paginateHandler}
+          defaultCurrent={6}
+          defaultPageSize={20}
+          total={totalResults}
+          onChange={paginateHandler}
         />
+        {/* <Pagination totalPages={totalPages} paginateHandler={paginateHandler} /> */}
       </Row>
     </>
   );

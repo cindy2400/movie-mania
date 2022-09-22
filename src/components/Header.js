@@ -1,8 +1,8 @@
-import React from "react";
-import "../Header.css";
 import { PageHeader } from "antd";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import "../Header.css";
 import { authActions } from "../store/auth/auth-slice";
 
 const Header = () => {
@@ -11,7 +11,7 @@ const Header = () => {
 
   const logoutHandler = () => {
     dispatch(authActions.logout());
-    localStorage.removeItem('loginToken');
+    localStorage.removeItem("loginToken");
   };
 
   return (

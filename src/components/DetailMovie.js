@@ -4,7 +4,10 @@ import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
-import { fetchDetailMovie } from "../store/movies/movies-fetcher";
+import {
+  fetchDetailMovie,
+  fetchMovieTrailer,
+} from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
 
 const { Meta } = Card;
@@ -13,6 +16,7 @@ const DetailMovie = () => {
   const dispatch = useDispatch();
   const movieDetail = useSelector((state) => state.movies.movie);
   const favMovie = useSelector((state) => state.movies.favoriteMovies);
+  const movieTrailerInfo = useSelector((state) => state.movies.movieTrailer);
   const param = useParams();
   const { movieId } = param;
   const isFavoriteMovie = useMemo(
@@ -22,6 +26,7 @@ const DetailMovie = () => {
 
   useEffect(() => {
     dispatch(fetchDetailMovie(movieId));
+    dispatch(fetchMovieTrailer(movieId));
   }, [dispatch, movieId]);
 
   const favoriteMovieHandler = (favoriteMovie) => {
@@ -89,6 +94,13 @@ const DetailMovie = () => {
             <Meta
               title={movieDetail.title}
               description={movieDetail.overview}
+            />
+            <iframe
+              width="500"
+              height="300"
+              style={{ marginTop: "20px" }}
+              title="Movie Trailer"
+              src={`https://www.youtube.com/embed/${movieTrailerInfo}`}
             />
           </Card>
         </Badge.Ribbon>

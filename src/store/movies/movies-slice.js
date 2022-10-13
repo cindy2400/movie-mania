@@ -6,6 +6,7 @@ const initialState = {
   totalPages: 1,
   totalMovies: 0,
   movie: [],
+  movieTrailer: {},
   favoriteMovies: [],
 };
 
@@ -39,6 +40,9 @@ export const moviesSlice = createSlice({
     },
     getDetailMovie(state, action) {
       state.movie = action.payload;
+    },
+    getMovieTrailer(state, action) {
+      state.movieTrailer = action.payload;
     },
     setFavoriteMovie(state, action) {
       state.favoriteMovies.push(action.payload);

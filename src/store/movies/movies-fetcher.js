@@ -68,3 +68,17 @@ export const fetchDetailMovie = (id) => {
     }
   };
 };
+
+export const fetchMovieTrailer = (id) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/videos?api_key=27280631869f4ae80976e4df31f9823a&language=en-US`
+      );
+      const data = response.data;
+      dispatch(moviesActions.getMovieTrailer(data.results[0].key));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};

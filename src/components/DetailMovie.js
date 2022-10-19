@@ -20,7 +20,7 @@ const DetailMovie = () => {
   const param = useParams();
   const { movieId } = param;
   const isFavoriteMovie = useMemo(
-    () => favMovie.some((movie) => movieId == movie.id),
+    () => favMovie.some((movie) => +movieId === +movie.id),
     [favMovie, movieId]
   );
 

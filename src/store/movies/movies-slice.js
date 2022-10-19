@@ -5,7 +5,7 @@ const initialState = {
   currentPage: 1,
   totalPages: 1,
   totalMovies: 0,
-  movie: [],
+  movie: {},
   movieTrailer: {},
   favoriteMovies: [],
 };
@@ -40,6 +40,9 @@ export const moviesSlice = createSlice({
     },
     getDetailMovie(state, action) {
       state.movie = action.payload;
+    },
+    removeDetailMovie(state) {
+      state.movie = {};
     },
     getMovieTrailer(state, action) {
       state.movieTrailer = action.payload;

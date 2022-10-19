@@ -11,6 +11,7 @@ import {
   fetchTopRatedMovies,
   fetchUpcomingMovies,
 } from "../store/movies/movies-fetcher";
+import { moviesActions } from "../store/movies/movies-slice";
 const { Option } = Select;
 
 const Home = ({ type }) => {
@@ -18,7 +19,6 @@ const Home = ({ type }) => {
   const history = useHistory();
   const location = useLocation();
   const movies = useSelector((state) => state.movies.movies);
-  const totalPages = useSelector((state) => state.movies.totalPages);
   const totalResults = useSelector((state) => state.movies.totalMovies);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState("all");
@@ -84,6 +84,10 @@ const Home = ({ type }) => {
     setFiltered(value);
   };
 
+  const removeDetailBeforeHandler = () => {
+    dispatch(moviesActions.removeDetailMovie());
+  };
+
   return (
     <>
       <Row style={{ margin: 20 }}>
@@ -117,7 +121,10 @@ const Home = ({ type }) => {
             text={movie.vote_average}
             color="volcano"
           >
-            <Link to={`/movies/${movie.id}`}>
+            <Link
+              onClick={removeDetailBeforeHandler}
+              to={`/movies/${movie.id}`}
+            >
               <Card
                 title={movie.title}
                 style={{

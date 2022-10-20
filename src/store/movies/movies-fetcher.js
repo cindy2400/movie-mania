@@ -82,3 +82,17 @@ export const fetchMovieTrailer = (id) => {
     }
   };
 };
+
+export const fetchSearchMovie = (query) => {
+  return async (dispatch) => {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}`
+      );
+      const data = response.data;
+      dispatch(moviesActions.setSearchMovie(data));
+    } catch (e) {
+      console.log(e);
+    }
+  };
+};

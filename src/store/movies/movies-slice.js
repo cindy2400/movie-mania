@@ -8,6 +8,7 @@ const initialState = {
   movie: {},
   movieTrailer: {},
   favoriteMovies: [],
+  searchMovies: [],
 };
 
 export const moviesSlice = createSlice({
@@ -54,6 +55,12 @@ export const moviesSlice = createSlice({
       state.favoriteMovies = state.favoriteMovies.filter(
         (movie) => movie.id !== action.payload
       );
+    },
+    setSearchMovie(state, action) {
+      state.movies = action.payload.results;
+      state.currentPage = action.payload.page;
+      state.totalPages = action.payload.total_pages;
+      state.totalMovies = action.payload.total_results;
     },
   },
 });

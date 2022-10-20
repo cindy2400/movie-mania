@@ -8,6 +8,7 @@ import { IMAGE_BASEURL } from "../apiRoutes";
 import {
   fetchNowPlayingMovies,
   fetchPopularMovies,
+  fetchSearchMovie,
   fetchTopRatedMovies,
   fetchUpcomingMovies,
 } from "../store/movies/movies-fetcher";
@@ -21,8 +22,6 @@ const Home = ({ type }) => {
   const movies = useSelector((state) => state.movies.movies);
   const totalResults = useSelector((state) => state.movies.totalMovies);
   const [search, setSearch] = useState("");
-  const [filtered, setFiltered] = useState("all");
-  const [searchMovies, setSearchMovies] = useState([]);
 
   let pageParams;
   const queryParams = new URLSearchParams(location.search);
@@ -52,36 +51,46 @@ const Home = ({ type }) => {
   }, [dispatch, type, currentPage, history, location.pathname, pageParams]);
 
   useEffect(() => {
-    const tempSearch = setTimeout(() => {
-      let filteredMovies = null;
-      if (filtered === "all") {
-        filteredMovies = movies.filter((movie) =>
-          movie.title.toLowerCase().includes(search)
-        );
-      } else if (filtered !== "all" && search === "") {
-        filteredMovies = movies.filter(
-          (movie) => movie.original_language === filtered
-        );
-      } else {
-        filteredMovies = movies.filter(
-          (movie) =>
-            movie.title.toLowerCase().includes(search) &&
-            movie.original_language === filtered
-        );
-      }
-      setSearchMovies(filteredMovies);
-    }, 500);
+    const searchResult = setTimeout(() => {
+      dispatch(fetchSearchMovie(search));
+    }, 1000);
+
     return () => {
-      clearTimeout(tempSearch);
+      clearTimeout(searchResult);
     };
-  }, [movies, search, filtered]);
+  }, [search, dispatch]);
+
+  // useEffect(() => {
+  //   const tempSearch = setTimeout(() => {
+  //     let filteredMovies = null;
+  //     if (filtered === "all") {
+  //       filteredMovies = movies.filter((movie) =>
+  //         movie.title.toLowerCase().includes(search)
+  //       );
+  //     } else if (filtered !== "all" && search === "") {
+  //       filteredMovies = movies.filter(
+  //         (movie) => movie.original_language === filtered
+  //       );
+  //     } else {
+  //       filteredMovies = movies.filter(
+  //         (movie) =>
+  //           movie.title.toLowerCase().includes(search) &&
+  //           movie.original_language === filtered
+  //       );
+  //     }
+  //     setSearchMovies(filteredMovies);
+  //   }, 500);
+  //   return () => {
+  //     clearTimeout(tempSearch);
+  //   };
+  // }, [movies, search, filtered]);
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
   };
 
   const handleChange = (value) => {
-    setFiltered(value);
+    // setFiltered(value);
   };
 
   const removeDetailBeforeHandler = () => {
@@ -115,7 +124,7 @@ const Home = ({ type }) => {
       </Row>
 
       <Space size={[40, 40]} wrap>
-        {searchMovies.map((movie) => (
+        {movies.map((movie) => (
           <Badge.Ribbon
             key={movie.id}
             text={movie.vote_average}

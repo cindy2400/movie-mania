@@ -8,7 +8,6 @@ import { IMAGE_BASEURL } from "../apiRoutes";
 import {
   fetchNowPlayingMovies,
   fetchPopularMovies,
-  fetchSearchMovie,
   fetchTopRatedMovies,
   fetchUpcomingMovies,
 } from "../store/movies/movies-fetcher";
@@ -21,12 +20,13 @@ const Home = ({ type }) => {
   const location = useLocation();
   const movies = useSelector((state) => state.movies.movies);
   const totalResults = useSelector((state) => state.movies.totalMovies);
-  const [search, setSearch] = useState("");
 
-  let pageParams;
   const queryParams = new URLSearchParams(location.search);
-  pageParams = queryParams.get("page") == null ? 1 : queryParams.get("page");
-  const [currentPage, setCurrentPage] = useState(pageParams);
+  const pageParams =
+    queryParams.get("page") == null ? 1 : queryParams.get("page");
+  const searchQuery = queryParams.get("search");
+  const [search, setSearch] = useState(searchQuery);
+  const [currentPage, setCurrentPage] = useState(parseInt(pageParams));
 
   const languages = useMemo(
     () => [...new Set(movies.map((movie) => movie.original_language))],
@@ -39,51 +39,25 @@ const Home = ({ type }) => {
 
   useEffect(() => {
     if (type === "upcoming") {
-      dispatch(fetchUpcomingMovies(pageParams));
+      dispatch(fetchUpcomingMovies(pageParams, searchQuery));
     } else if (type === "popular") {
-      dispatch(fetchPopularMovies(pageParams));
+      dispatch(fetchPopularMovies(pageParams, searchQuery));
     } else if (type === "top-rated") {
-      dispatch(fetchTopRatedMovies(pageParams));
+      dispatch(fetchTopRatedMovies(pageParams, searchQuery));
     } else {
-      dispatch(fetchNowPlayingMovies(pageParams));
+      dispatch(fetchNowPlayingMovies(pageParams, searchQuery));
     }
-    history.push(`${location.pathname}?page=${currentPage}`);
-  }, [dispatch, type, currentPage, history, location.pathname, pageParams]);
+  }, [dispatch, type, pageParams, searchQuery]);
 
   useEffect(() => {
     const searchResult = setTimeout(() => {
-      dispatch(fetchSearchMovie(search));
+      history.push(`${location.pathname}?page=${currentPage}&search=${search}`);
     }, 1000);
 
     return () => {
       clearTimeout(searchResult);
     };
-  }, [search, dispatch]);
-
-  // useEffect(() => {
-  //   const tempSearch = setTimeout(() => {
-  //     let filteredMovies = null;
-  //     if (filtered === "all") {
-  //       filteredMovies = movies.filter((movie) =>
-  //         movie.title.toLowerCase().includes(search)
-  //       );
-  //     } else if (filtered !== "all" && search === "") {
-  //       filteredMovies = movies.filter(
-  //         (movie) => movie.original_language === filtered
-  //       );
-  //     } else {
-  //       filteredMovies = movies.filter(
-  //         (movie) =>
-  //           movie.title.toLowerCase().includes(search) &&
-  //           movie.original_language === filtered
-  //       );
-  //     }
-  //     setSearchMovies(filteredMovies);
-  //   }, 500);
-  //   return () => {
-  //     clearTimeout(tempSearch);
-  //   };
-  // }, [movies, search, filtered]);
+  }, [search, dispatch, history, location.pathname, currentPage]);
 
   const searchHandler = (e) => {
     setSearch(e.target.value);
@@ -101,7 +75,7 @@ const Home = ({ type }) => {
     <>
       <Row style={{ margin: 20 }}>
         <Col span={18} push={6}>
-          <Input placeholder="Search" onChange={searchHandler} />
+          <Input placeholder="Search" onChange={searchHandler} value={search} />
         </Col>
         <Col span={6} pull={18}>
           <Select
@@ -158,10 +132,10 @@ const Home = ({ type }) => {
         style={{ minHeight: "15vh" }}
       >
         <Pagination
-          defaultCurrent={6}
-          defaultPageSize={20}
+          pageSize={20}
           total={totalResults}
           onChange={paginateHandler}
+          current={currentPage}
         />
         {/* <Pagination totalPages={totalPages} paginateHandler={paginateHandler} /> */}
       </Row>
@@ -170,3 +144,28 @@ const Home = ({ type }) => {
 };
 
 export default Home;
+
+// useEffect(() => {
+//   const tempSearch = setTimeout(() => {
+//     let filteredMovies = null;
+//     if (filtered === "all") {
+//       filteredMovies = movies.filter((movie) =>
+//         movie.title.toLowerCase().includes(search)
+//       );
+//     } else if (filtered !== "all" && search === "") {
+//       filteredMovies = movies.filter(
+//         (movie) => movie.original_language === filtered
+//       );
+//     } else {
+//       filteredMovies = movies.filter(
+//         (movie) =>
+//           movie.title.toLowerCase().includes(search) &&
+//           movie.original_language === filtered
+//       );
+//     }
+//     setSearchMovies(filteredMovies);
+//   }, 500);
+//   return () => {
+//     clearTimeout(tempSearch);
+//   };
+// }, [movies, search, filtered]);

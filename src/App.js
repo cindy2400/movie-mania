@@ -49,6 +49,9 @@ function App() {
           <Route path="/movies/:movieId">
             <DetailMovie />
           </Route>
+          <Route path="/search" exact>
+            <Home />
+          </Route>
         </>
       )}
       {!isLogin && (

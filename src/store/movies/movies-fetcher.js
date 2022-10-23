@@ -7,72 +7,40 @@ import {
 } from "../../apiRoutes";
 import { moviesActions } from "./movies-slice";
 
-export const fetchNowPlayingMovies = (page, query) => {
+export const fetchMovies = (page, query, year, type) => {
   return async (dispatch) => {
     try {
       let response;
       if (query === "") {
-        response = await axios.get(`${GET_NOW_PLAYING}&page=${page}`);
+        if (type === "upcoming") {
+          response = await axios.get(`${GET_UPCOMING}&page=${page}`);
+        } else if (type === "popular") {
+          response = await axios.get(`${GET_POPULAR}&page=${page}`);
+        } else if (type === "top-rated") {
+          response = await axios.get(`${GET_TOP_RATED}&page=${page}`);
+        } else {
+          response = await axios.get(`${GET_NOW_PLAYING}&page=${page}`);
+        }
       } else {
-        response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}&page=${page}`
-        );
+        if (year === "all") {
+          response = await axios.get(
+            `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}&page=${page}`
+          );
+        } else {
+          response = await axios.get(
+            `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}&page=${page}&year=${year}`
+          );
+        }
       }
-      dispatch(moviesActions.getNowPlayingMovies(response.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
-
-export const fetchUpcomingMovies = (page, query) => {
-  return async (dispatch) => {
-    try {
-      let response;
-      if (query === "") {
-        response = await axios.get(`${GET_UPCOMING}&page=${page}`);
+      if (type === "upcoming") {
+        dispatch(moviesActions.getUpcomingMovie(response.data));
+      } else if (type === "popular") {
+        dispatch(moviesActions.getPopularMovies(response.data));
+      } else if (type === "top-rated") {
+        dispatch(moviesActions.getTopRatedMovies(response.data));
       } else {
-        response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}&page=${page}`
-        );
+        dispatch(moviesActions.getNowPlayingMovies(response.data));
       }
-      dispatch(moviesActions.getUpcomingMovie(response.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
-
-export const fetchPopularMovies = (page, query) => {
-  return async (dispatch) => {
-    try {
-      let response;
-      if (query === "") {
-        response = await axios.get(`${GET_POPULAR}&page=${page}`);
-      } else {
-        response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}&page=${page}`
-        );
-      }
-      dispatch(moviesActions.getPopularMovies(response.data));
-    } catch (error) {
-      console.log(error);
-    }
-  };
-};
-
-export const fetchTopRatedMovies = (page, query) => {
-  return async (dispatch) => {
-    try {
-      let response;
-      if (query === "") {
-        response = await axios.get(`${GET_TOP_RATED}&page=${page}`);
-      } else {
-        response = await axios.get(
-          `https://api.themoviedb.org/3/search/movie?api_key=27280631869f4ae80976e4df31f9823a&language=en-US&query=${query}&page=${page}`
-        );
-      }
-      dispatch(moviesActions.getTopRatedMovies(response.data));
     } catch (error) {
       console.log(error);
     }

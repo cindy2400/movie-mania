@@ -5,12 +5,7 @@ import "react-lazy-load-image-component/src/effects/blur.css";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
-import {
-  fetchNowPlayingMovies,
-  fetchPopularMovies,
-  fetchTopRatedMovies,
-  fetchUpcomingMovies,
-} from "../store/movies/movies-fetcher";
+import { fetchMovies } from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
 const { Option } = Select;
 
@@ -25,11 +20,13 @@ const Home = ({ type }) => {
   const pageParams =
     queryParams.get("page") == null ? 1 : queryParams.get("page");
   const searchQuery = queryParams.get("search");
-  const [search, setSearch] = useState(searchQuery);
+  const searchTemp = searchQuery === null ? "" : searchQuery;
+  const [yearFilter, setYearFilter] = useState("all");
+  const [search, setSearch] = useState(searchTemp);
   const [currentPage, setCurrentPage] = useState(parseInt(pageParams));
 
-  const languages = useMemo(
-    () => [...new Set(movies.map((movie) => movie.original_language))],
+  const releaseYear = useMemo(
+    () => [...new Set(movies.map((movie) => movie.release_date?.slice(0, 4)))],
     [movies]
   );
 
@@ -38,16 +35,8 @@ const Home = ({ type }) => {
   };
 
   useEffect(() => {
-    if (type === "upcoming") {
-      dispatch(fetchUpcomingMovies(pageParams, searchQuery));
-    } else if (type === "popular") {
-      dispatch(fetchPopularMovies(pageParams, searchQuery));
-    } else if (type === "top-rated") {
-      dispatch(fetchTopRatedMovies(pageParams, searchQuery));
-    } else {
-      dispatch(fetchNowPlayingMovies(pageParams, searchQuery));
-    }
-  }, [dispatch, type, pageParams, searchQuery]);
+    dispatch(fetchMovies(pageParams, searchTemp, yearFilter, type));
+  }, [dispatch, type, pageParams, searchTemp, yearFilter]);
 
   useEffect(() => {
     const searchResult = setTimeout(() => {
@@ -64,7 +53,7 @@ const Home = ({ type }) => {
   };
 
   const handleChange = (value) => {
-    // setFiltered(value);
+    setYearFilter(value);
   };
 
   const removeDetailBeforeHandler = () => {
@@ -80,16 +69,17 @@ const Home = ({ type }) => {
         <Col span={6} pull={18}>
           <Select
             defaultValue="all"
+            disabled={searchTemp === ""}
             style={{
               width: 120,
             }}
             onChange={handleChange}
           >
             <Option value="all">All</Option>
-            {languages.map((lang) => {
+            {releaseYear.map((year) => {
               return (
-                <Option key={lang} value={lang}>
-                  {lang}
+                <Option key={year} value={year}>
+                  {year}
                 </Option>
               );
             })}
@@ -104,11 +94,9 @@ const Home = ({ type }) => {
             text={movie.vote_average}
             color="volcano"
           >
-            <Link
-              onClick={removeDetailBeforeHandler}
-              to={`/movies/${movie.id}`}
-            >
+            <Link to={`/movies/${movie.id}`}>
               <Card
+                onClick={removeDetailBeforeHandler}
                 title={movie.title}
                 style={{
                   width: 300,
@@ -144,28 +132,3 @@ const Home = ({ type }) => {
 };
 
 export default Home;
-
-// useEffect(() => {
-//   const tempSearch = setTimeout(() => {
-//     let filteredMovies = null;
-//     if (filtered === "all") {
-//       filteredMovies = movies.filter((movie) =>
-//         movie.title.toLowerCase().includes(search)
-//       );
-//     } else if (filtered !== "all" && search === "") {
-//       filteredMovies = movies.filter(
-//         (movie) => movie.original_language === filtered
-//       );
-//     } else {
-//       filteredMovies = movies.filter(
-//         (movie) =>
-//           movie.title.toLowerCase().includes(search) &&
-//           movie.original_language === filtered
-//       );
-//     }
-//     setSearchMovies(filteredMovies);
-//   }, 500);
-//   return () => {
-//     clearTimeout(tempSearch);
-//   };
-// }, [movies, search, filtered]);

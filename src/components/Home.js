@@ -25,10 +25,14 @@ const Home = ({ type }) => {
   const [search, setSearch] = useState(searchTemp);
   const [currentPage, setCurrentPage] = useState(parseInt(pageParams));
 
-  const releaseYear = useMemo(
-    () => [...new Set(movies.map((movie) => movie.release_date?.slice(0, 4)))],
-    [movies]
-  );
+  const releaseYear = useMemo(() => {
+    let arrYear = [];
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= 1990; i--) {
+      arrYear.push(i);
+    }
+    return arrYear;
+  }, []);
 
   const paginateHandler = (pageNumbers) => {
     setCurrentPage(pageNumbers);

@@ -77,7 +77,7 @@ const DetailMovie = () => {
           <Card
             hoverable
             style={{
-              width: 800,
+              width: 600,
             }}
             cover={
               <LazyLoadImage
@@ -100,6 +100,7 @@ const DetailMovie = () => {
               height="300"
               style={{ marginTop: "20px" }}
               title="Movie Trailer"
+              allowFullScreen
               src={`https://www.youtube.com/embed/${movieTrailerInfo}`}
             />
           </Card>

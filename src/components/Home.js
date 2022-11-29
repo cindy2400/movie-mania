@@ -91,32 +91,34 @@ const Home = ({ type }) => {
         </Col>
       </Row>
 
-      <Space size={[40, 40]} wrap>
-        {movies.map((movie) => (
-          <Badge.Ribbon
-            key={movie.id}
-            text={movie.vote_average}
-            color="volcano"
-          >
-            <Link to={`/movies/${movie.id}`}>
-              <Card
-                onClick={removeDetailBeforeHandler}
-                title={movie.title}
-                style={{
-                  width: 300,
-                }}
-              >
-                <LazyLoadImage
-                  width={250}
-                  height="auto"
-                  src={`${IMAGE_BASEURL}${movie.poster_path}`}
-                  effect="blur"
-                />
-              </Card>
-            </Link>
-          </Badge.Ribbon>
-        ))}
-      </Space>
+      <div style={{ margin: "20px" }}>
+        <Space size={[30, 30]} wrap>
+          {movies.map((movie) => (
+            <Badge.Ribbon
+              key={movie.id}
+              text={movie.vote_average}
+              color="volcano"
+            >
+              <Link to={`/movies/${movie.id}`}>
+                <Card
+                  onClick={removeDetailBeforeHandler}
+                  title={movie.title}
+                  style={{
+                    width: 220,
+                  }}
+                >
+                  <LazyLoadImage
+                    width={180}
+                    height="auto"
+                    src={`${IMAGE_BASEURL}${movie.poster_path}`}
+                    effect="blur"
+                  />
+                </Card>
+              </Link>
+            </Badge.Ribbon>
+          ))}
+        </Space>
+      </div>
       <Row
         type="flex"
         justify="center"

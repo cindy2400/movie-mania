@@ -1,7 +1,7 @@
 import { PageHeader } from "antd";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "../Header.css";
 import { authActions } from "../store/auth/auth-slice";
 
@@ -18,36 +18,45 @@ const Header = () => {
     <div className="site-page-header-ghost-wrapper">
       <PageHeader
         ghost={false}
-        title="Movie Mania"
+        title={
+          <Link className="title" to="/movies">
+            Movie Mania
+          </Link>
+        }
         extra={
           isLogin
             ? [
-                <Link key="4" to="/movies">
+                <NavLink activeClassName="link-active" key="4" to="/movies">
                   Now Playing
-                </Link>,
-                <Link key="5" to="/upcoming">
+                </NavLink>,
+                <NavLink activeClassName="link-active" key="5" to="/upcoming">
                   Upcoming
-                </Link>,
-                <Link key="6" to="/popular">
+                </NavLink>,
+                <NavLink activeClassName="link-active" key="6" to="/popular">
                   Popular
-                </Link>,
-                <Link key="7" to="/top-rated">
+                </NavLink>,
+                <NavLink activeClassName="link-active" key="7" to="/top-rated">
                   Top Rated
-                </Link>,
-                <Link key="8" to="/favorites">
+                </NavLink>,
+                <NavLink activeClassName="link-active" key="8" to="/favorites">
                   Favorites
-                </Link>,
-                <Link key="3" to="/logout" onClick={logoutHandler}>
+                </NavLink>,
+                <NavLink
+                  activeClassName="link-active"
+                  key="3"
+                  to="/logout"
+                  onClick={logoutHandler}
+                >
                   Logout
-                </Link>,
+                </NavLink>,
               ]
             : [
-                <Link key="1" to="/login">
+                <NavLink activeClassName="link-active" key="1" to="/login">
                   Login
-                </Link>,
-                <Link key="2" to="/register">
+                </NavLink>,
+                <NavLink activeClassName="link-active" key="2" to="/register">
                   Register
-                </Link>,
+                </NavLink>,
               ]
         }
       />

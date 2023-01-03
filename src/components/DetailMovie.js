@@ -1,4 +1,4 @@
-import { Badge, Button, Card, message, Row } from "antd";
+import { Card, message } from "antd";
 import React, { useEffect, useMemo } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import {
   fetchDetailMovie,
+  fetchMovieActors,
   fetchMovieTrailer,
 } from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
@@ -17,6 +18,7 @@ const DetailMovie = () => {
   const movieDetail = useSelector((state) => state.movies.movie);
   const favMovie = useSelector((state) => state.movies.favoriteMovies);
   const movieTrailerInfo = useSelector((state) => state.movies.movieTrailer);
+  const movieActors = useSelector((state) => state.movies.movieActors);
   const param = useParams();
   const { movieId } = param;
   const isFavoriteMovie = useMemo(
@@ -27,6 +29,7 @@ const DetailMovie = () => {
   useEffect(() => {
     dispatch(fetchDetailMovie(movieId));
     dispatch(fetchMovieTrailer(movieId));
+    dispatch(fetchMovieActors(movieId));
   }, [dispatch, movieId]);
 
   const favoriteMovieHandler = (favoriteMovie) => {
@@ -39,73 +42,178 @@ const DetailMovie = () => {
     message.info("Movie removed from favorite");
   };
 
+  console.log(movieActors);
+
   const favRemoveButton = (isFavoriteMovie) => {
     if (isFavoriteMovie) {
       return (
-        <Button
-          type="dashed"
-          style={{ marginBottom: 20 }}
-          danger
-          onClick={() => removeMovieHandler(movieDetail.id)}
-        >
-          Remove
-        </Button>
+        <div className="flex-1 m-2">
+          <div className="flex">
+            <button
+              className="bg-yellow-800 p-3 pl-5 pr-5 m-2 text-white rounded-full border border-yellow-500"
+              onClick={() => removeMovieHandler(movieDetail.id)}
+            >
+              &hearts;
+            </button>
+            <p className="text-white text-md font-semibold mt-3 w-24 ">
+              Remove from favorite
+            </p>
+          </div>
+        </div>
       );
     } else {
       return (
-        <Button
-          type="primary"
-          style={{ marginBottom: 20 }}
-          danger
-          onClick={() => favoriteMovieHandler(movieDetail)}
-        >
-          Favorites
-        </Button>
+        <div className="flex-1 m-2">
+          <div className="flex">
+            <button
+              className="bg-red-800 p-3 pl-5 pr-5 m-2 text-white rounded-full border border-red-500"
+              onClick={() => favoriteMovieHandler(movieDetail)}
+            >
+              &hearts;
+            </button>
+            <p className="text-white text-md font-semibold mt-3 w-12 ">
+              Add to favorite
+            </p>
+          </div>
+        </div>
       );
     }
   };
 
   return (
     <>
-      <Row
-        type="flex"
-        justify="center"
-        align="middle"
-        style={{ minHeight: "100vh" }}
+      <div
+        style={{
+          backgroundImage: `url(${IMAGE_BASEURL}${movieDetail.backdrop_path})`,
+          width: "100%",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+        }}
       >
-        <Badge.Ribbon text={movieDetail.original_language} color="green">
-          <Card
-            hoverable
-            style={{
-              width: 600,
-            }}
-            cover={
-              <LazyLoadImage
-                src={`${IMAGE_BASEURL}${movieDetail.backdrop_path}`}
-              />
-            }
-          >
-            {favRemoveButton(isFavoriteMovie)}
+        <div className="flex bg-[rgba(1,1,1,0.7)]">
+          <div className="flex-none w-2/5">
+            <LazyLoadImage
+              src={`${IMAGE_BASEURL}${movieDetail.poster_path}`}
+              className="w-3/5 m-9 ml-32 rounded-xl"
+            />
+          </div>
 
-            {movieDetail.genres &&
-              movieDetail.genres.map((genre) => {
-                return <p key={genre.id}>{genre.name}</p>;
-              })}
-            <Meta
-              title={movieDetail.title}
-              description={movieDetail.overview}
-            />
-            <iframe
-              width="500"
-              height="300"
-              style={{ marginTop: "20px" }}
-              title="Movie Trailer"
-              allowFullScreen
-              src={`https://www.youtube.com/embed/${movieTrailerInfo}`}
-            />
-          </Card>
-        </Badge.Ribbon>
-      </Row>
+          <div className="flex-auto w-3/5 mt-9 mr-24">
+            <p className="text-white text-4xl uppercase font-bold m-3">
+              {movieDetail.title}
+            </p>
+            <p className="text-white text-md font-normal m-3">
+              {movieDetail.status} &bull; {movieDetail.release_date} &bull;{" "}
+              {movieDetail.runtime} minutes
+            </p>
+
+            <div className="flex">
+              <div className="flex-none m-2">
+                <div className="flex">
+                  <button className="bg-slate-800 p-3 pl-3 pr-3 m-2 text-white rounded-full border border-green-500">
+                    {Math.ceil(movieDetail.vote_average) * 10}%
+                  </button>
+                  <p
+                    className="text-white text-md
+                   font-semibold mt-3 w-12"
+                  >
+                    User score
+                  </p>
+                </div>
+              </div>
+              {favRemoveButton(isFavoriteMovie)}
+            </div>
+
+            <p className="text-slate-300 text-xl font-normal m-3 italic">
+              {movieDetail.tagline}
+            </p>
+            <p className="text-white text-xl font-semibold m-3">Overview</p>
+            <p className="text-white text-md font-normal m-3">
+              {movieDetail.overview}
+            </p>
+            <div class="grid grid-cols-3 gap-3">
+              {movieDetail.production_companies?.map((company) => (
+                <div>
+                  <p className="text-white text-md font-semibold m-3">
+                    {company.name}
+                  </p>
+                  <p className="text-white text-md font-normal m-3">
+                    {company.origin_country}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex">
+        <div class="basis-3/4 m-6 overflow-x-scroll">
+          <p className="text-black text-2xl font-semibold">Actor</p>
+          <div className=" flex overflow-x-scroll">
+            {movieActors.map((actor) => (
+              <Card
+                hoverable
+                style={{
+                  width: 150,
+                  marginRight: 16,
+                  marginBottom: 12,
+                  borderRadius: 12,
+                }}
+                cover={
+                  <img
+                    alt="actor"
+                    src={`${IMAGE_BASEURL}${actor.profile_path}`}
+                    style={{
+                      height: "200px",
+                      objectFit: "cover",
+                    }}
+                  />
+                }
+              >
+                <Meta
+                  title={actor.name}
+                  description={actor.character}
+                  style={{
+                    fontSize: 12,
+                  }}
+                />
+              </Card>
+            ))}
+          </div>
+
+          <p className="text-black text-2xl font-semibold mt-5">Trailer</p>
+          <iframe
+            width="500"
+            height="300"
+            style={{ marginTop: "20px" }}
+            title="Movie Trailer"
+            allowFullScreen
+            src={`https://www.youtube.com/embed/${movieTrailerInfo}`}
+          />
+        </div>
+
+        <div class="basis-1/4 m-6">
+          <p className="text-black text-lg font-bold">Original title</p>
+          <p className="text-black text-md font-semibold">
+            {movieDetail.original_title}
+          </p>
+          <p className="text-black text-lg font-bold">Genres</p>
+          <p className="text-black text-md font-semibold">
+            {movieDetail.genres?.map((genre) => (
+              <p>{genre.name}</p>
+            ))}
+          </p>
+          <p className="text-black text-lg font-bold">Spoken Language</p>
+          {movieDetail.spoken_languages?.map((lang) => (
+            <p className="text-black text-md font-semibold">{lang.name}</p>
+          ))}
+          <p className="text-black text-lg font-bold">Budget</p>
+          <p className="text-black text-md font-semibold">
+            {movieDetail.budget}
+          </p>
+        </div>
+      </div>
     </>
   );
 };

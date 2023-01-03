@@ -65,6 +65,24 @@ export const fetchDetailMovie = (id) => {
   };
 };
 
+export const fetchMovieActors = (id) => {
+  return async (dispatch) => {
+    const fetchData = async () => {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/credits?api_key=27280631869f4ae80976e4df31f9823a&language=en-US`
+      );
+      const data = await response.data;
+      return data;
+    };
+    try {
+      const actors = await fetchData();
+      dispatch(moviesActions.setMovieActors(actors));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const fetchMovieTrailer = (id) => {
   return async (dispatch) => {
     try {

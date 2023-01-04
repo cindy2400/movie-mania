@@ -173,6 +173,7 @@ const DetailMovie = () => {
               >
                 <Meta
                   title={actor.name}
+                  className="truncate"
                   description={actor.character}
                   style={{
                     fontSize: 12,

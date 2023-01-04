@@ -1,4 +1,4 @@
-import { Col, Input, Pagination, Row, Select } from "antd";
+import { Pagination, Row, Select } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -49,6 +49,7 @@ const Movies = ({ type }) => {
 
     return () => {
       clearTimeout(searchResult);
+      dispatch(moviesActions.removeMovies());
     };
   }, [search, dispatch, history, location.pathname, currentPage]);
 
@@ -66,34 +67,43 @@ const Movies = ({ type }) => {
 
   return (
     <>
-      <Row style={{ margin: 20 }}>
-        <Col span={18} push={6}>
-          <Input placeholder="Search" onChange={searchHandler} value={search} />
-        </Col>
-        <Col span={6} pull={18}>
-          <Select
-            defaultValue="all"
-            disabled={searchTemp === ""}
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-          >
-            <Option value="all">All</Option>
-            {releaseYear.map((year) => {
-              return (
-                <Option key={year} value={year}>
-                  {year}
-                </Option>
-              );
-            })}
-          </Select>
-        </Col>
-      </Row>
+      <div className="bg-gradient-to-r from-sky-800 to-stone-500 mb-6">
+        <div className="p-6">
+          <p className="text-white text-2xl font-semibold m-0 capitalize">
+            {type || "Movies"}
+          </p>
+          <div className="flex ">
+            <input
+              type="text"
+              className="mb-2 mt-3 mr-6 pl-4 w-full h-12 rounded-full text-md"
+              placeholder="Search movie title"
+              onChange={searchHandler}
+              value={search}
+            />
+            <div className="mt-5">
+              <Select
+                defaultValue="all"
+                className="w-40"
+                disabled={searchTemp === ""}
+                onChange={handleChange}
+              >
+                <Option value="all">All</Option>
+                {releaseYear.map((year) => {
+                  return (
+                    <Option key={year} value={year}>
+                      {year}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-wrap space-x-4 justify-center">
         {movies.map((movie) => (
-          <Link to={`/movies/${movie.id}`}>
+          <Link key={movie.id} to={`/movies/${movie.id}`}>
             <Card
               onClick={removeDetailBeforeHandler}
               image={`${IMAGE_BASEURL}${movie.poster_path}`}

@@ -46,6 +46,9 @@ export const moviesSlice = createSlice({
       state.totalMovies = action.payload.total_results;
       state.topratedMoviesPreview = action.payload.results;
     },
+    removeMovies(state) {
+      state.movies = [];
+    },
     getDetailMovie(state, action) {
       state.movie = action.payload;
     },

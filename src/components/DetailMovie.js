@@ -30,6 +30,7 @@ const DetailMovie = () => {
     dispatch(fetchDetailMovie(movieId));
     dispatch(fetchMovieTrailer(movieId));
     dispatch(fetchMovieActors(movieId));
+    return () => dispatch(moviesActions.removeMovieActors());
   }, [dispatch, movieId]);
 
   const favoriteMovieHandler = (favoriteMovie) => {
@@ -41,8 +42,6 @@ const DetailMovie = () => {
     dispatch(moviesActions.removeFavoriteMovie(movieId));
     message.info("Movie removed from favorite");
   };
-
-  console.log(movieActors);
 
   const favRemoveButton = (isFavoriteMovie) => {
     if (isFavoriteMovie) {
@@ -131,7 +130,7 @@ const DetailMovie = () => {
             <p className="text-white text-md font-normal m-3">
               {movieDetail.overview}
             </p>
-            <div class="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-3 mb-6">
               {movieDetail.production_companies?.map((company) => (
                 <div>
                   <p className="text-white text-md font-semibold m-3">

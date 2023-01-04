@@ -60,6 +60,9 @@ export const moviesSlice = createSlice({
     setMovieActors(state, action) {
       state.movieActors = action.payload.cast;
     },
+    removeMovieActors(state) {
+      state.movieActors = [];
+    },
   },
 });
 

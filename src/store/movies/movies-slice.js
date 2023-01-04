@@ -10,6 +10,9 @@ const initialState = {
   favoriteMovies: [],
   searchMovies: [],
   movieActors: [],
+  upcomingMoviesPreview: [],
+  popularMoviesPreview: [],
+  topratedMoviesPreview: [],
 };
 
 export const moviesSlice = createSlice({
@@ -27,18 +30,21 @@ export const moviesSlice = createSlice({
       state.currentPage = action.payload.page;
       state.totalPages = action.payload.total_pages;
       state.totalMovies = action.payload.total_results;
+      state.upcomingMoviesPreview = action.payload.results;
     },
     getPopularMovies(state, action) {
       state.movies = action.payload.results;
       state.currentPage = action.payload.page;
       state.totalPages = action.payload.total_pages;
       state.totalMovies = action.payload.total_results;
+      state.popularMoviesPreview = action.payload.results;
     },
     getTopRatedMovies(state, action) {
       state.movies = action.payload.results;
       state.currentPage = action.payload.page;
       state.totalPages = action.payload.total_pages;
       state.totalMovies = action.payload.total_results;
+      state.topratedMoviesPreview = action.payload.results;
     },
     getDetailMovie(state, action) {
       state.movie = action.payload;

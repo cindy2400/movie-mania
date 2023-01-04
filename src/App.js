@@ -1,29 +1,30 @@
 import "antd/dist/antd.css";
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Route } from "react-router-dom";
 import DetailMovie from "./components/DetailMovie";
 import FavoriteMovies from "./components/FavoriteMovies";
-import Header from "./components/Header";
 import Home from "./components/Home";
+import Movies from "./components/Movies";
+import Header from "./components/ui/Header";
 
 function App() {
   return (
     <>
       <Header />
       <Route path="/" exact>
-        <Redirect to="/movies" />
-      </Route>
-      <Route path="/movies" exact>
         <Home />
       </Route>
+      <Route path="/movies" exact>
+        <Movies />
+      </Route>
       <Route path="/upcoming">
-        <Home type="upcoming" />
+        <Movies type="upcoming" />
       </Route>
       <Route path="/popular">
-        <Home type="popular" />
+        <Movies type="popular" />
       </Route>
       <Route path="/top-rated">
-        <Home type="top-rated" />
+        <Movies type="top-rated" />
       </Route>
       <Route path="/favorites">
         <FavoriteMovies />
@@ -32,7 +33,7 @@ function App() {
         <DetailMovie />
       </Route>
       <Route path="/search" exact>
-        <Home />
+        <Movies />
       </Route>
     </>
   );

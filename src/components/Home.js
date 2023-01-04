@@ -1,138 +1,84 @@
-import { Badge, Card, Col, Input, Pagination, Row, Select, Space } from "antd";
-import React, { useEffect, useMemo, useState } from "react";
-import { LazyLoadImage } from "react-lazy-load-image-component";
-import "react-lazy-load-image-component/src/effects/blur.css";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import { fetchMovies } from "../store/movies/movies-fetcher";
-import { moviesActions } from "../store/movies/movies-slice";
-const { Option } = Select;
+import Card from "./ui/Card";
 
-const Home = ({ type }) => {
+const Home = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
-  const location = useLocation();
-  const movies = useSelector((state) => state.movies.movies);
-  const totalResults = useSelector((state) => state.movies.totalMovies);
-
-  const queryParams = new URLSearchParams(location.search);
-  const pageParams =
-    queryParams.get("page") == null ? 1 : queryParams.get("page");
-  const searchQuery = queryParams.get("search");
-  const searchTemp = searchQuery === null ? "" : searchQuery;
-  const [yearFilter, setYearFilter] = useState("all");
-  const [search, setSearch] = useState(searchTemp);
-  const [currentPage, setCurrentPage] = useState(parseInt(pageParams));
-
-  const releaseYear = useMemo(() => {
-    let arrYear = [];
-    const currentYear = new Date().getFullYear();
-    for (let i = currentYear; i >= 1990; i--) {
-      arrYear.push(i);
-    }
-    return arrYear;
-  }, []);
-
-  const paginateHandler = (pageNumbers) => {
-    setCurrentPage(pageNumbers);
-  };
+  const upcomingMoviesPreview = useSelector(
+    (state) => state.movies.upcomingMoviesPreview
+  );
+  const popularMoviesPreview = useSelector(
+    (state) => state.movies.popularMoviesPreview
+  );
+  const topratedMoviesPreview = useSelector(
+    (state) => state.movies.topratedMoviesPreview
+  );
 
   useEffect(() => {
-    dispatch(fetchMovies(pageParams, searchTemp, yearFilter, type));
-  }, [dispatch, type, pageParams, searchTemp, yearFilter]);
-
-  useEffect(() => {
-    const searchResult = setTimeout(() => {
-      history.push(`${location.pathname}?page=${currentPage}&search=${search}`);
-    }, 1000);
-
-    return () => {
-      clearTimeout(searchResult);
-    };
-  }, [search, dispatch, history, location.pathname, currentPage]);
-
-  const searchHandler = (e) => {
-    setSearch(e.target.value);
-  };
-
-  const handleChange = (value) => {
-    setYearFilter(value);
-  };
-
-  const removeDetailBeforeHandler = () => {
-    dispatch(moviesActions.removeDetailMovie());
-  };
+    dispatch(fetchMovies(1, "", "all", "upcoming"));
+    dispatch(fetchMovies(1, "", "all", "popular"));
+    dispatch(fetchMovies(1, "", "all", "top-rated"));
+  }, [dispatch]);
 
   return (
     <>
-      <Row style={{ margin: 20 }}>
-        <Col span={18} push={6}>
-          <Input placeholder="Search" onChange={searchHandler} value={search} />
-        </Col>
-        <Col span={6} pull={18}>
-          <Select
-            defaultValue="all"
-            disabled={searchTemp === ""}
-            style={{
-              width: 120,
-            }}
-            onChange={handleChange}
-          >
-            <Option value="all">All</Option>
-            {releaseYear.map((year) => {
-              return (
-                <Option key={year} value={year}>
-                  {year}
-                </Option>
-              );
-            })}
-          </Select>
-        </Col>
-      </Row>
-
-      <div style={{ margin: "20px" }}>
-        <Space size={[30, 30]} wrap>
-          {movies.map((movie) => (
-            <Badge.Ribbon
-              key={movie.id}
-              text={movie.vote_average}
-              color="volcano"
-            >
-              <Link to={`/movies/${movie.id}`}>
-                <Card
-                  onClick={removeDetailBeforeHandler}
-                  title={movie.title}
-                  style={{
-                    width: 220,
-                  }}
-                >
-                  <LazyLoadImage
-                    width={180}
-                    height="auto"
-                    src={`${IMAGE_BASEURL}${movie.poster_path}`}
-                    effect="blur"
-                  />
-                </Card>
-              </Link>
-            </Badge.Ribbon>
-          ))}
-        </Space>
+      <div className="bg-gradient-to-r from-sky-800 to-stone-500">
+        <div className="p-12">
+          <p className="text-white text-5xl font-bold m-0">Welcome</p>
+          <p className="text-white text-2xl font-semibold m-0">
+            Millions of movies to discover. Explore now.
+          </p>
+          <input
+            type="text"
+            className="mb-4 mt-9 pl-4 w-full h-12 rounded-full text-md"
+            placeholder="Search movie title"
+          />
+        </div>
       </div>
-      <Row
-        type="flex"
-        justify="center"
-        align="middle"
-        style={{ minHeight: "15vh" }}
-      >
-        <Pagination
-          pageSize={20}
-          total={totalResults}
-          onChange={paginateHandler}
-          current={currentPage}
-        />
-        {/* <Pagination totalPages={totalPages} paginateHandler={paginateHandler} /> */}
-      </Row>
+      <div className="m-9">
+        <p className="text-black text-2xl font-semibold">Upcoming</p>
+        <div className="flex overflow-x-scroll">
+          {upcomingMoviesPreview?.map((movie) => (
+            <Link to={`/movies/${movie.id}`}>
+              <Card
+                image={`${IMAGE_BASEURL}${movie.poster_path}`}
+                title={movie.title}
+                date={movie.release_date}
+                rating={movie.vote_average}
+              />
+            </Link>
+          ))}
+        </div>
+        <p className="text-black text-2xl font-semibold mt-8">Popular</p>
+        <div className="flex overflow-x-scroll">
+          {popularMoviesPreview?.map((movie) => (
+            <Link to={`/movies/${movie.id}`}>
+              <Card
+                image={`${IMAGE_BASEURL}${movie.poster_path}`}
+                title={movie.title}
+                date={movie.release_date}
+                rating={movie.vote_average}
+              />
+            </Link>
+          ))}
+        </div>
+        <p className="text-black text-2xl font-semibold mt-8">Top rated</p>
+        <div className="flex overflow-x-scroll">
+          {topratedMoviesPreview?.map((movie) => (
+            <Link to={`/movies/${movie.id}`}>
+              <Card
+                image={`${IMAGE_BASEURL}${movie.poster_path}`}
+                title={movie.title}
+                date={movie.release_date}
+                rating={movie.vote_average}
+              />
+            </Link>
+          ))}
+        </div>
+      </div>
     </>
   );
 };

@@ -87,6 +87,7 @@ const DetailMovie = () => {
           width: "100%",
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
+          backgroundColor: "rgb(51 65 85)",
         }}
       >
         <div className="flex bg-[rgba(1,1,1,0.7)]">

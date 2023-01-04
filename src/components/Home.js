@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import { fetchMovies } from "../store/movies/movies-fetcher";
 import Card from "./ui/Card";
 
 const Home = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const upcomingMoviesPreview = useSelector(
     (state) => state.movies.upcomingMoviesPreview
   );
@@ -16,12 +17,27 @@ const Home = () => {
   const topratedMoviesPreview = useSelector(
     (state) => state.movies.topratedMoviesPreview
   );
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     dispatch(fetchMovies(1, "", "all", "upcoming"));
     dispatch(fetchMovies(1, "", "all", "popular"));
     dispatch(fetchMovies(1, "", "all", "top-rated"));
   }, [dispatch]);
+
+  useEffect(() => {
+    const searchTimeout = setTimeout(() => {
+      if (searchText !== "") {
+        history.push(`movies?page=1&search=${searchText}`);
+      }
+    }, 500);
+
+    return () => clearTimeout(searchTimeout);
+  }, [history, searchText]);
+
+  const onSearchHomeHandler = (e) => {
+    setSearchText(e.target.value);
+  };
 
   return (
     <>
@@ -35,6 +51,7 @@ const Home = () => {
             type="text"
             className="mb-4 mt-9 pl-4 w-full h-12 rounded-full text-md"
             placeholder="Search movie title"
+            onChange={onSearchHomeHandler}
           />
         </div>
       </div>

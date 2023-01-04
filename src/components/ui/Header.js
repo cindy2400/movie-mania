@@ -17,7 +17,7 @@ const Header = () => {
         extra={[
           <Button key="3">
             <NavLink activeClassName="link-active" to="/movies">
-              Now playing
+              Movies
             </NavLink>
           </Button>,
           <Button key="2">

@@ -1,3 +1,20 @@
+# Movie Mania 
+
+### This website was built using :  
+- [React JS](https://reactjs.org/)
+- [React Router](https://reactrouter.com/en/main)
+- [Redux](https://redux.js.org/)
+- [Ant Design](https://ant.design/)
+- [Axios](https://axios-http.com/docs/intro)
+- [Reqres](https://ant.design/) = API for authentication
+- [TMDB API](https://developers.themoviedb.org/3/getting-started/introduction) = API for movie data
+- [Create React App](https://github.com/facebook/create-react-app)
+
+### Preview : 
+![login](./public/Movie-mania-1.PNG)
+![home](./public/Movie-mania-2.PNG)
+![detail](./public/Movie-mania-3.PNG)
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

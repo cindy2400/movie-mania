@@ -101,15 +101,20 @@ const Movies = ({ type }) => {
         </div>
       </div>
 
-      <div className="flex flex-wrap space-x-4 justify-center">
+      <div className="flex flex-wrap">
         {movies.map((movie) => (
-          <Link key={movie.id} to={`/movies/${movie.id}`}>
+          <Link
+            className="basis-1/5 grow"
+            key={movie.id}
+            to={`/movies/${movie.id}`}
+          >
             <Card
               onClick={removeDetailBeforeHandler}
               image={`${IMAGE_BASEURL}${movie.poster_path}`}
               title={movie.title}
               date={movie.release_date}
               rating={movie.vote_average}
+              className="m-auto mt-6"
             />
           </Link>
         ))}

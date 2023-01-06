@@ -1,10 +1,10 @@
 import { Badge } from "antd";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 
-const Card = ({ image, title, date, rating, style, onClick }) => {
+const Card = ({ image, title, date, rating, className, onClick }) => {
   return (
     <div
-      className={`rounded-lg m-3 w-40 max-h-full ${style}`}
+      className={`rounded-lg m-3 w-40 max-h-full ${className}`}
       onClick={onClick}
     >
       <Badge.Ribbon key={1} text={rating} color="volcano">

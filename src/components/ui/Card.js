@@ -15,7 +15,13 @@ const Card = ({ image, title, date, rating, className, onClick }) => {
           effect="blur"
         />
         <p className="text-black text-base font-bold m-0 truncate">{title}</p>
-        <p className="text-black">{date}</p>
+        <p className="text-black">
+          {new Date(date).toLocaleDateString("en-us", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })}
+        </p>
       </Badge.Ribbon>
     </div>
   );

@@ -103,8 +103,13 @@ const DetailMovie = () => {
               {movieDetail.title}
             </p>
             <p className="text-white text-md font-normal m-3">
-              {movieDetail.status} &bull; {movieDetail.release_date} &bull;{" "}
-              {movieDetail.runtime} minutes
+              {movieDetail.status} &bull;{" "}
+              {new Date(movieDetail.release_date).toLocaleDateString("en-us", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}{" "}
+              &bull; {movieDetail.runtime} minutes
             </p>
 
             <div className="flex">

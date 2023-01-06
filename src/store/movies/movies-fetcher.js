@@ -65,6 +65,24 @@ export const fetchDetailMovie = (id) => {
   };
 };
 
+export const fetchDetailActor = (idActor) => {
+  return async (dispatch) => {
+    const fetchData = async () => {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/person/${idActor}?api_key=27280631869f4ae80976e4df31f9823a&language=en-US`
+      );
+      const data = await response.data;
+      return data;
+    };
+    try {
+      const actor = await fetchData();
+      dispatch(moviesActions.setMovieActor(actor));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+};
+
 export const fetchMovieActors = (id) => {
   return async (dispatch) => {
     const fetchData = async () => {

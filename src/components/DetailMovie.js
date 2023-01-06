@@ -2,7 +2,7 @@ import { Card, message } from "antd";
 import React, { useEffect, useMemo } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import {
   fetchDetailMovie,
@@ -134,7 +134,7 @@ const DetailMovie = () => {
             <div className="grid grid-cols-3 gap-3 mb-6">
               {movieDetail.production_companies?.map((company) => (
                 <div>
-                  <p className="text-white text-md font-semibold m-3">
+                  <p className="text-white text-md font-semibold m-3 truncate">
                     {company.name}
                   </p>
                   <p className="text-white text-md font-normal m-3">
@@ -152,34 +152,35 @@ const DetailMovie = () => {
           <p className="text-black text-2xl font-semibold">Actor</p>
           <div className=" flex overflow-x-scroll">
             {movieActors.map((actor) => (
-              <Card
-                hoverable
-                style={{
-                  width: 150,
-                  marginRight: 16,
-                  marginBottom: 12,
-                  borderRadius: 12,
-                }}
-                cover={
-                  <img
-                    alt="actor"
-                    src={`${IMAGE_BASEURL}${actor.profile_path}`}
+              <Link to={`/movieActor/${actor.id}`}>
+                <Card
+                  hoverable
+                  style={{
+                    width: 150,
+                    marginRight: 16,
+                    marginBottom: 12,
+                    borderRadius: 12,
+                  }}
+                  cover={
+                    <LazyLoadImage
+                      src={`${IMAGE_BASEURL}${actor.profile_path}`}
+                      style={{
+                        height: "200px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  }
+                >
+                  <Meta
+                    title={actor.name}
+                    className="truncate"
+                    description={actor.character}
                     style={{
-                      height: "200px",
-                      objectFit: "cover",
+                      fontSize: 12,
                     }}
                   />
-                }
-              >
-                <Meta
-                  title={actor.name}
-                  className="truncate"
-                  description={actor.character}
-                  style={{
-                    fontSize: 12,
-                  }}
-                />
-              </Card>
+                </Card>
+              </Link>
             ))}
           </div>
 

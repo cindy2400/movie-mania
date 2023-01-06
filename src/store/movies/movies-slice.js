@@ -10,6 +10,7 @@ const initialState = {
   favoriteMovies: [],
   searchMovies: [],
   movieActors: [],
+  movieActor: {},
   upcomingMoviesPreview: [],
   popularMoviesPreview: [],
   topratedMoviesPreview: [],
@@ -71,6 +72,12 @@ export const moviesSlice = createSlice({
     },
     removeMovieActors(state) {
       state.movieActors = [];
+    },
+    setMovieActor(state, action) {
+      state.movieActor = action.payload;
+    },
+    removeMovieActor(state) {
+      state.movieActor = {};
     },
   },
 });

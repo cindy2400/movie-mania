@@ -10,6 +10,8 @@ import {
   fetchMovieTrailer,
 } from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
+import { isEmpty } from "../util/helper";
+import Loading from "./ui/Loading";
 
 const { Meta } = Card;
 
@@ -79,6 +81,7 @@ const DetailMovie = () => {
     }
   };
 
+  if (isEmpty(movieDetail)) return <Loading />;
   return (
     <>
       <div

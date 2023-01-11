@@ -59,7 +59,7 @@ const Home = () => {
         <p className="text-black text-2xl font-semibold">Upcoming</p>
         <div className="flex overflow-x-scroll">
           {upcomingMoviesPreview?.map((movie) => (
-            <Link to={`/movies/${movie.id}`}>
+            <Link key={movie.id} to={`/movies/${movie.id}`}>
               <Card
                 image={`${IMAGE_BASEURL}${movie.poster_path}`}
                 title={movie.title}
@@ -72,7 +72,7 @@ const Home = () => {
         <p className="text-black text-2xl font-semibold mt-8">Popular</p>
         <div className="flex overflow-x-scroll">
           {popularMoviesPreview?.map((movie) => (
-            <Link to={`/movies/${movie.id}`}>
+            <Link key={movie.id} to={`/movies/${movie.id}`}>
               <Card
                 image={`${IMAGE_BASEURL}${movie.poster_path}`}
                 title={movie.title}
@@ -85,7 +85,7 @@ const Home = () => {
         <p className="text-black text-2xl font-semibold mt-8">Top rated</p>
         <div className="flex overflow-x-scroll">
           {topratedMoviesPreview?.map((movie) => (
-            <Link to={`/movies/${movie.id}`}>
+            <Link key={movie.id} to={`/movies/${movie.id}`}>
               <Card
                 image={`${IMAGE_BASEURL}${movie.poster_path}`}
                 title={movie.title}

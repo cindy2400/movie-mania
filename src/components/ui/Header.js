@@ -15,27 +15,33 @@ const Header = () => {
           </Link>
         }
         extra={[
-          <Button key="3">
-            <NavLink activeClassName="link-active" to="/movies">
+          <Button key="movies">
+            <NavLink activeClassName="link-active" to="/movies?page=1&search=">
               Movies
             </NavLink>
           </Button>,
-          <Button key="2">
-            <NavLink activeClassName="link-active" to="/upcoming">
+          <Button key="upcoming">
+            <NavLink
+              activeClassName="link-active"
+              to="/upcoming?page=1&search="
+            >
               Upcoming
             </NavLink>
           </Button>,
-          <Button key="2">
-            <NavLink activeClassName="link-active" to="/popular">
+          <Button key="popular">
+            <NavLink activeClassName="link-active" to="/popular?page=1&search=">
               Popular
             </NavLink>
           </Button>,
-          <Button key="2">
-            <NavLink activeClassName="link-active" to="/top-rated">
+          <Button key="toprated">
+            <NavLink
+              activeClassName="link-active"
+              to="/top-rated?page=1&search="
+            >
               Top rated
             </NavLink>
           </Button>,
-          <Button key="1" type="danger">
+          <Button key="favorite" type="danger">
             <NavLink activeClassName="link-active" to="/favorites">
               Favorite
             </NavLink>

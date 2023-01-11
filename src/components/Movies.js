@@ -1,4 +1,4 @@
-import { Pagination, Row, Select } from "antd";
+import { Empty, Pagination, Row, Select } from "antd";
 import React, { useEffect, useMemo, useState } from "react";
 import "react-lazy-load-image-component/src/effects/blur.css";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,6 +7,7 @@ import { IMAGE_BASEURL } from "../apiRoutes";
 import { fetchMovies } from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
 import Card from "./ui/Card";
+import Loading from "./ui/Loading";
 const { Option } = Select;
 
 const Movies = ({ type }) => {
@@ -15,6 +16,7 @@ const Movies = ({ type }) => {
   const location = useLocation();
   const movies = useSelector((state) => state.movies.movies);
   const totalResults = useSelector((state) => state.movies.totalMovies);
+  const isLoading = useSelector((state) => state.movies.isLoading);
 
   const queryParams = new URLSearchParams(location.search);
   const pageParams =
@@ -49,7 +51,6 @@ const Movies = ({ type }) => {
 
     return () => {
       clearTimeout(searchResult);
-      dispatch(moviesActions.removeMovies());
     };
   }, [search, dispatch, history, location.pathname, currentPage]);
 
@@ -63,6 +64,56 @@ const Movies = ({ type }) => {
 
   const removeDetailBeforeHandler = () => {
     dispatch(moviesActions.removeDetailMovie());
+  };
+
+  const bodyElement = (isLoading, movies) => {
+    if (isLoading) {
+      return <Loading />;
+    } else if (!isLoading && movies.length === 0) {
+      return (
+        <div className="m-24">
+          <Empty />
+        </div>
+      );
+    } else {
+      return (
+        <>
+          <div className="flex flex-wrap">
+            {movies.map((movie) => (
+              <Link
+                className="basis-1/5 grow"
+                key={movie.id}
+                to={`/movies/${movie.id}`}
+              >
+                <Card
+                  onClick={removeDetailBeforeHandler}
+                  image={`${IMAGE_BASEURL}${movie.poster_path}`}
+                  title={movie.title}
+                  date={movie.release_date}
+                  rating={movie.vote_average}
+                  className="m-auto mt-6"
+                />
+              </Link>
+            ))}
+          </div>
+
+          <Row
+            type="flex"
+            justify="center"
+            align="middle"
+            style={{ minHeight: "15vh" }}
+          >
+            <Pagination
+              pageSize={20}
+              total={totalResults}
+              onChange={paginateHandler}
+              current={currentPage}
+            />
+            {/* <Pagination totalPages={totalPages} paginateHandler={paginateHandler} /> */}
+          </Row>
+        </>
+      );
+    }
   };
 
   return (
@@ -101,39 +152,7 @@ const Movies = ({ type }) => {
         </div>
       </div>
 
-      <div className="flex flex-wrap">
-        {movies.map((movie) => (
-          <Link
-            className="basis-1/5 grow"
-            key={movie.id}
-            to={`/movies/${movie.id}`}
-          >
-            <Card
-              onClick={removeDetailBeforeHandler}
-              image={`${IMAGE_BASEURL}${movie.poster_path}`}
-              title={movie.title}
-              date={movie.release_date}
-              rating={movie.vote_average}
-              className="m-auto mt-6"
-            />
-          </Link>
-        ))}
-      </div>
-
-      <Row
-        type="flex"
-        justify="center"
-        align="middle"
-        style={{ minHeight: "15vh" }}
-      >
-        <Pagination
-          pageSize={20}
-          total={totalResults}
-          onChange={paginateHandler}
-          current={currentPage}
-        />
-        {/* <Pagination totalPages={totalPages} paginateHandler={paginateHandler} /> */}
-      </Row>
+      {bodyElement(isLoading, movies)}
     </>
   );
 };

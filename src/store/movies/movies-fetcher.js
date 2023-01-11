@@ -9,6 +9,7 @@ import { moviesActions } from "./movies-slice";
 
 export const fetchMovies = (page, query, year, type) => {
   return async (dispatch) => {
+    dispatch(moviesActions.setIsLoading(true));
     try {
       let response;
       if (query === "") {
@@ -41,6 +42,7 @@ export const fetchMovies = (page, query, year, type) => {
       } else {
         dispatch(moviesActions.getNowPlayingMovies(response.data));
       }
+      dispatch(moviesActions.setIsLoading(false));
     } catch (error) {
       console.log(error);
     }

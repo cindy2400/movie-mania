@@ -14,6 +14,7 @@ const initialState = {
   upcomingMoviesPreview: [],
   popularMoviesPreview: [],
   topratedMoviesPreview: [],
+  isLoading: false,
 };
 
 export const moviesSlice = createSlice({
@@ -78,6 +79,9 @@ export const moviesSlice = createSlice({
     },
     removeMovieActor(state) {
       state.movieActor = {};
+    },
+    setIsLoading(state, action) {
+      state.isLoading = action.payload;
     },
   },
 });

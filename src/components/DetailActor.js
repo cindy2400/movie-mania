@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 import { IMAGE_BASEURL } from "../apiRoutes";
 import { fetchDetailActor } from "../store/movies/movies-fetcher";
 import { moviesActions } from "../store/movies/movies-slice";
+import { isEmpty } from "../util/helper";
+import Loading from "./ui/Loading";
 
 const DetailActor = () => {
   const dispatch = useDispatch();
@@ -18,8 +20,7 @@ const DetailActor = () => {
     return () => dispatch(moviesActions.removeMovieActor());
   }, [actorId, dispatch]);
 
-  console.log(detailActor);
-
+  if (isEmpty(detailActor)) return <Loading />;
   return (
     <div className="flex flex-row m-9">
       <div className="basis-1/4">

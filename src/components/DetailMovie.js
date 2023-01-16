@@ -119,7 +119,7 @@ const DetailMovie = () => {
               <div className="flex-none m-2">
                 <div className="flex">
                   <button className="bg-slate-800 p-3 pl-3 pr-3 m-2 text-white rounded-full border border-green-500">
-                    {Math.ceil(movieDetail.vote_average) * 10}%
+                    {Math.round(movieDetail.vote_average * 10)}%
                   </button>
                   <p
                     className="text-white text-md

@@ -7,7 +7,7 @@ const Card = ({ image, title, date, rating, className, onClick }) => {
       className={`rounded-lg m-3 w-40 max-h-full ${className}`}
       onClick={onClick}
     >
-      <Badge.Ribbon key={1} text={rating} color="volcano">
+      <Badge.Ribbon key={1} text={`${rating * 10}%`} color="volcano">
         <LazyLoadImage
           className="rounded-2xl w-64"
           height="auto"
